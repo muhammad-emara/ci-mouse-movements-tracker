@@ -93,7 +93,7 @@
 
 <script type="text/javascript" src="<?php echo base_url() . 'assets/js/jquery.js' ?>"></script>
 <script type="text/javascript" src="<?php echo base_url() . 'assets/js/bootstrap.js' ?>"></script>
-<script type="text/javascript" src="<?php echo base_url() . 'assets/js/jquery.dataTables.js' ?>"></script>
+
 
 
 <script type="text/javascript">
@@ -121,6 +121,17 @@
 
 
             var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";
+
+
+            if (typeof(Storage) !== "undefined") {
+                // Store
+                 localStorage.setItem("cursorpoint-x", event.clientX);
+                 localStorage.setItem("cursorpoint-y", event.clientY);
+                // Retrieve
+             //   document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+            }
 
             mousepoint.push({_pageX: event.pageX, _pageY: event.pageY, _clientX: event.pageX, _clientY: event.pageY});
 

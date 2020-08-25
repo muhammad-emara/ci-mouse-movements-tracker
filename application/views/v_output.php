@@ -72,7 +72,7 @@
 
 <script type="text/javascript" src="<?php echo base_url() . 'assets/js/jquery.js' ?>"></script>
 <script type="text/javascript" src="<?php echo base_url() . 'assets/js/bootstrap.js' ?>"></script>
-<script type="text/javascript" src="<?php echo base_url() . 'assets/js/jquery.dataTables.js' ?>"></script>
+
 
 
 <script type="text/javascript">
@@ -109,26 +109,23 @@
 
 
 <script type="text/javascript">
+    
+    var streeming = false;
+    var timerlimit;
+    var dbStreem =false;
     $(document).ready(function () {
 
             //Enable recording
-            $('#btn-start').on('click', function () {
-                /*  $(this).toggleClass("btn-primary");*/
-                recordign=true;
-
-                console.log('Enable Recording...');
-            });
-
-            //Dis Enable recording
-            $('#btn-stop').on('click', function () {
-                /*  $(this).toggleClass("btn-primary");*/
-                recordign=false;
-
-                console.log('Disable Recording...');
-            });
+          
 
             $('#btn-get-record').on('click', function () {
                 /*  $(this).toggleClass("btn-primary");*/
+
+                streeming = false;
+                dbStreem =true;
+                clearInterval(timerlimit);
+                
+                
                 recordign=false;
 
                 console.log('Points saved...');
@@ -171,35 +168,101 @@
             });
 
 
+        $('#btn-start-live').on('click', function () {
+            /*  $(this).toggleClass("btn-primary");*/
+          //  recordign=false;
+            streeming =true;
+            dbStreem =false;
+
+            console.log('Points Streeming...');
+
+             timerlimit = setInterval(myTimer, 500);
+
+           
+           
+            return false;
+        });
+
+        function myTimer(){
+
+            if (typeof(Storage) !== "undefined") {
+                // Store
+             
+                // Retrieve
+                //   document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+
+
+                let streem_cy = localStorage.getItem("cursorpoint-y");
+                let streem_cx = localStorage.getItem("cursorpoint-x");
+                if(streem_cy !=null) {
+                    console.log("_clientX:- " + streem_cx + ' _clientY:- ' + streem_cy);
+                    let cx = parseInt(streem_cx);
+                    let cy = parseInt(streem_cy);
+                   
+
+                    //  $(".follow").css({'top': streem_cy, 'left': streem_cx});
+                    $(".follow").css("top",streem_cy);
+                    $(".follow").css("left",streem_cx);
+
+                    console.log( $(".follow").css("left"));
+                    $('.follow').css({'top': cy, 'left': cx});
+
+                    console.log( $(".follow").css("left"));
+
+
+                    $("#mouse-location").last().text("( event.clientX, event.clientY ) : " + "(" + streem_cx + ' ,' + streem_cy +')');
+
+
+
+                    localStorage.clear("cursorpoint-y");
+                    localStorage.clear("cursorpoint-x");
+                }
+
+              
+            } else {
+                document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Storage...";
+            }
+        }//while
+
+
+       
+
+
         }
     );
     
     
     function smiluatemovement() {
+        
+        if(dbStreem)
+        {
+            console.log('pointsarray Data Array is ');
+            console.log(mousepoint_recorded);
+            setTimeout(function () {   //  call a 3s setTimeout when the loop is called
+                //   console.log('hello');
+                //  your code here
+                xx++;                    //  increment the counter
 
-        console.log('pointsarray Data Array is ');
-        console.log(mousepoint_recorded);
-        setTimeout(function () {   //  call a 3s setTimeout when the loop is called
-            //   console.log('hello');
-            //  your code here
-            xx++;                    //  increment the counter
+                //console.log("_clientX:- " + cx + ' _clientY:- ' + cy );
+                if (xx < mousepoint_recorded.length) {           //  if the counter < 10, call the loop function
+                    let cy = mousepoint_recorded[xx]._clientY;
+                    let cx = mousepoint_recorded[xx]._clientX;
 
-            //console.log("_clientX:- " + cx + ' _clientY:- ' + cy );
-            if (xx < mousepoint_recorded.length) {           //  if the counter < 10, call the loop function
-                let cy = mousepoint_recorded[xx]._clientY;
-                let cx = mousepoint_recorded[xx]._clientX;
+                    console.log("_clientX:- " + cx + ' _clientY:- ' + cy);
 
-                console.log("_clientX:- " + cx + ' _clientY:- ' + cy);
+                    //   $("#mouse-location").first().text("( event.pageX, event.pageY ) : " + pageCoords);
+                    $("#mouse-location").last().text("( event.clientX, event.clientY ) : " + "(" + cx + ' ,' + cy+')');
 
-             //   $("#mouse-location").first().text("( event.pageX, event.pageY ) : " + pageCoords);
-                $("#mouse-location").last().text("( event.clientX, event.clientY ) : " + "(" + cx + ' ,' + cy+')');
-                
-                $('.follow').css({'top': cy, 'left': cx});
+                    $('.follow').css({'top': cy, 'left': cx});
 
 
-                smiluatemovement();            //  ..  again which will trigger another
-            }                       //  ..  setTimeout()
-        }, 100)
+                    smiluatemovement();            //  ..  again which will trigger another
+                }                       //  ..  setTimeout()
+            }, 100);
+            
+        }
+
+        
     }
 
 </script>
